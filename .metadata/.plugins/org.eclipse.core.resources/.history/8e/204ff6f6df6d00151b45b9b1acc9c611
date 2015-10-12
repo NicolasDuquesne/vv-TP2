@@ -1,0 +1,267 @@
+package simpleGame.core;
+
+//It is recommended to import Mockito statically so that the code looks clearer
+import static org.mockito.Mockito.*;
+
+// Eclipse might not find this one automatically:
+import org.mockito.runners.MockitoJUnitRunner;
+
+import simpleGame.core.Board;
+import simpleGame.core.Direction;
+import simpleGame.core.Pawn;
+import simpleGame.exception.OutOfBoardException;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+
+/**
+ * Created by nduquesne on 25/09/15.
+ */
+
+@RunWith(MockitoJUnitRunner.class) // This is required for mocks to work
+public class TestBoard {
+
+	/*
+	 * Test de la méthode removeAllPawns()
+	 * Cette méthode va être utile pour la suite des tests car à l'initialisation
+	 * d'un Board, il y a des Pawns plaçés aléatoirement sur le Board
+	 * On supprimera donc ceux-ci pour contrôler la position des Pawns
+	 */
+	@Test
+	public void removeAllPawnsTest(){
+		//Initialisation d'un Board
+        Board myBoard = new Board(2, 6, 6, 3, 3);
+        
+        //Suppression de l'ensemble des pawns de ce Board
+		myBoard.removeAllPawns();
+        
+        //Vérification du nombre de pawn
+        assertEquals(0, myBoard.numberOfPawns());
+	}
+	
+	/*
+	 * Test de la méthode getXsize() et get YSize()
+	 * On initialise un Board à 20 pions, de taille 6x6 et avec l'emplacement
+	 * du bonus à 3x3
+	 * On vérifie qu'après initialisation du Board, la taille de celui-ci
+	 * est bien de 6 sur 6
+	 */
+    @Test
+    public void getSizeTest() {
+    	//Initilisation du Board
+        Board myBoard = new Board(20, 6, 6, 3, 3);
+
+        //Test de la taille 6 sur 6
+        assertEquals(6, myBoard.getXSize());
+        assertEquals(6, myBoard.getYSize());
+    }
+    
+    /*
+     * Test de la méthode numberOfPawns()
+     * On initialise un Board avec 1 Pawn
+     * On vérifie ce nombre
+     */
+	@Test
+	public void numberOfPawnsTest(){
+        //Initialisation d'un Board
+        Board myBoard = new Board(1, 6, 6, 3, 3);
+        
+        //Vérification du nombre de pawn
+        assertEquals(1, myBoard.numberOfPawns());
+	}
+    
+    /*
+     * Test des méthodes addPawns(), getSquareContent() et squareContentSprite()
+     * On initialise un Board avec 2 pions, de taille 6x6 avec le bonus
+     * à la position 3x3 puis on supprime les Pawns initialisés
+     * On commence par faire un mock d'un pawn avec une position en 4x5 et 
+     * la lettre 'l' et on l'ajoute.
+     * On vérifie maintenant le nombre de pawn (1), qu'il est à la position définie (4x5)
+     * et on vérifie que c'est le bon Pawns par sa lettre (l)
+     */
+	@Test
+	public void addPawnsTest(){
+        //Initialisation d'un Board et suppression des Pawns initialisés
+        //et positionnés aléatoirement
+        Board myBoard = new Board(2, 6, 6, 3, 3);
+        myBoard.removeAllPawns();
+        
+		//Mock d'un pawn
+		Pawn mockPawn = mock(Pawn.class);
+        when(mockPawn.getX()).thenReturn(4);
+        when(mockPawn.getY()).thenReturn(5);
+        when(mockPawn.getLetter()).thenReturn('l');
+        
+        //Ajout du pawn
+        myBoard.addPawn(mockPawn);
+
+        //Vérification du nombre de pawn
+        assertEquals(1, myBoard.numberOfPawns());
+        //Vérification que le Pawn est à la bonne position
+        assertEquals(mockPawn, myBoard.getSquareContent(4, 5));
+        //Vérification de la lettre du Pawn
+        assertEquals('l', myBoard.squareContentSprite(4, 5));
+	}
+	
+	 /*
+     * Test des méthodes removePawns() et getSquareContent()
+     * On initialise un Board avec 2 pions, de taille 6x6 avec le bonus
+     * à la position 3x3 puis on supprime les Pawns initialisés.
+     * On commence par faire un mock d'un pawn avec une position en 4x5 et 
+     * la lettre 'l' et on l'ajoute.
+     * On vérifie maintenant le nombre de pawn sur le Board (0) et 
+     * on vérifie qu'à la position du Pawn se soit vide.
+     */
+	@Test
+	public void removePawnsTest(){        
+		//Initialisation d'un Board et suppression des Pawns initialisés
+        //et positionnés aléatoirement
+        Board myBoard = new Board(2, 6, 6, 3, 3);
+        myBoard.removeAllPawns();
+        
+		//Mock d'un pawn
+		Pawn mockPawn = mock(Pawn.class);
+        when(mockPawn.getX()).thenReturn(4);
+        when(mockPawn.getY()).thenReturn(5);
+            
+        //Ajout du pawn
+        myBoard.addPawn(mockPawn);
+        
+        //suppression du pawn
+        myBoard.removePawn(mockPawn);
+        
+        //Vérification du nombre de pawn
+        assertEquals(0, myBoard.numberOfPawns());
+        //Vérification qu'il n'y a plus le pawn dans la position de celui-ci
+        assertNull(myBoard.getSquareContent(4,5));
+	}
+	
+	/*
+	 * Test de la méthode isBonusSquare()
+	 */
+	@Test
+	public void isBonusSquareTest(){
+		//Initialisation d'un Board et suppression des Pawns initialisés
+        //et positionnés aléatoirement
+        Board myBoard = new Board(2, 6, 6, 3, 3);
+        myBoard.removeAllPawns();
+        
+        assertFalse(myBoard.isBonusSquare(2, 2));
+        assertFalse(myBoard.isBonusSquare(2, 3));
+        assertFalse(myBoard.isBonusSquare(3,  2));
+        assertTrue(myBoard.isBonusSquare(3,  3));
+	}
+	
+	 /*
+     * Test de la méthode squareContentSprite()
+     * On initialise un Board avec un Pawn.
+     * On fait un mock d'un Pawn possédant la position du Pawn qui a été intialisé juste avant.
+     * On teste le retour du caractère 'c'
+     * Si le currentPawn est sur le bonusSquare, on le bouge
+     * On teste le retour du caractère '#'
+     * On vide le Board
+     * On teste le retour du caractère '.'
+     * On fait un mock d'un Pawn que l'on ajoute au Board
+     * On teste le retour de la lettre de ce nouveau Pawn
+     */
+	@Test
+	public void squareContentSpriteTest() throws OutOfBoardException{
+		//Initialisation d'un Board
+        Board myBoard = new Board(1, 6, 6, 3, 3);
+        
+        //Mock d'un pawn qui récupère la position du pawn initialisé à l'instanciation du Board
+  		Pawn mockCurrentPawn = mock(Pawn.class);
+  		when(mockCurrentPawn.getX()).thenReturn(myBoard.getNextPawn().getX());
+  		when(mockCurrentPawn.getY()).thenReturn(myBoard.getNextPawn().getY());
+		
+       	//Vérification du retour du 'c' du currentPawn
+       	assertEquals('c',  myBoard.squareContentSprite(mockCurrentPawn.getX(), mockCurrentPawn.getY()));
+       	
+       	//On vérifie que le currentPawn n'est pas sur le BonusSquare, si oui, on bouge le currentPawn
+        if(mockCurrentPawn.getX()==3 && mockCurrentPawn.getY()==3){
+      		mockCurrentPawn.move(Direction.Right);
+        }
+       	//Vérification du retour du '#' en 3x3
+       	assertEquals('#', myBoard.squareContentSprite(3, 3));
+        
+       	//On vide le Board
+        myBoard.removeAllPawns();
+        
+        //Vérification du retour du '.' en 1x1
+        assertEquals('.',  myBoard.squareContentSprite(1, 1));
+  		
+  		//Mock d'un pawn
+		Pawn mockPawn = mock(Pawn.class);
+        when(mockPawn.getX()).thenReturn(4);
+        when(mockPawn.getY()).thenReturn(5);
+        when(mockPawn.getLetter()).thenReturn('l');
+       
+        //Ajout du pawn
+        myBoard.addPawn(mockPawn);
+
+        //Vérification du retour de la lettre 'l' en 4x5
+        assertEquals('l', myBoard.squareContentSprite(4, 5));
+
+	}
+	
+	/*
+	 * Test de la méthode getNextPawn()
+	 * On fait un mock d'un Pawn.
+	 * On initialise un Board avec un Pawn que l'on bouge si celui-ci est mis sur la position du Pawn précédent.
+	 * On ajoute le Pawn et on utilise la méthode getNextPawn().
+	 */
+	@Test
+	public void getNextPawnTest() throws OutOfBoardException{
+		//Mock d'un pawn
+		Pawn mockPawn = mock(Pawn.class);
+        when(mockPawn.getX()).thenReturn(4);
+        when(mockPawn.getY()).thenReturn(5);
+        when(mockPawn.getLetter()).thenReturn('l');
+        
+		//Initialisation d'un Board
+        Board myBoard = new Board(1, 6, 6, 2, 2);
+        if((myBoard.getNextPawn().getX()==4 && myBoard.getNextPawn().getY()==5)){
+        	myBoard.getNextPawn().move(Direction.Right);
+        }
+            
+        //Ajout du pawn
+        myBoard.addPawn(mockPawn);
+        myBoard.getNextPawn();
+                
+        //Vérification du passage au Pawn suivant
+        assertEquals('l', myBoard.getNextPawn().getLetter());       
+	}
+	
+	/*
+	 * Test de la méthode maxGold()
+	 */
+	@Test
+	public void maxGoldTest() throws OutOfBoardException{
+		//Initialisation d'un Board
+        Board myBoard = new Board(1, 6, 6, 3, 3);
+		Pawn mockPawn1 = mock(Pawn.class);
+        when(mockPawn1.getGold()).thenReturn(3);
+		Pawn mockPawn2 = mock(Pawn.class);
+        when(mockPawn2.getGold()).thenReturn(5);
+        myBoard.addPawn(mockPawn1);
+        myBoard.addPawn(mockPawn2);
+                      	
+       	assertEquals(5, myBoard.maxGold());
+	}
+	
+	/*
+	 * Test de la méthode toString()
+	 */
+	@Test
+	public void toStringTest(){
+		//Initialisation d'un Board et suppression des Pawns initialisés
+        //et positionnés aléatoirement
+        Board myBoard = new Board(1, 2, 2, 1, 1);
+        myBoard.removeAllPawns();
+        
+       	assertEquals(".#\n..\n", myBoard.toString());
+	}
+}

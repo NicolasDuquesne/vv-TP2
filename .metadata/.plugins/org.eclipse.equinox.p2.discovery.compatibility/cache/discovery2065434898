@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<script language="Javascript" type="text/javascript">
+window.location.href="https://hautdebitmobile.orange.fr:8443/static?CPURL="+location.href
+</script>
+</head>
+<body>
+<noscript>
+<p style="text-align: center;"><iframe src="https://hautdebitmobile.orange.fr:8443/jsredirect/orange/static.html" height="375" width="275" frameBorder="0" scrolling="no" /></p>
+</noscript>
+</body>
+</html>
+<html>
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<WISPAccessGatewayParam
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.acmewisp.com/WISPAccessGatewayParam.xsd">
+<Redirect>
+<AccessProcedure>1.0</AccessProcedure>
+<AccessLocation>Orange France</AccessLocation>
+<LocationName>Orange France</LocationName>
+<LoginURL>https://hautdebitmobile.orange.fr:8443/wispr/logon</LoginURL>
+<MessageType>100</MessageType>
+<ResponseCode>0</ResponseCode>
+</Redirect>
+</WISPAccessGatewayParam>-->
+</html>

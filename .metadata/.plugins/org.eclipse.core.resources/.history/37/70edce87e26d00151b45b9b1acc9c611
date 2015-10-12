@@ -1,0 +1,27 @@
+package simpleGame.core;
+//It is recommended to import Mockito statically so that the code looks clearer
+import static org.mockito.Mockito.*;
+
+//Eclipse might not find this one automatically:
+import org.mockito.runners.MockitoJUnitRunner;
+
+import simpleGame.cli.CLIMain;
+import simpleGame.core.Board;
+import simpleGame.core.Direction;
+import simpleGame.core.Pawn;
+import simpleGame.exception.OutOfBoardException;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(MockitoJUnitRunner.class) // This is required for mocks to work
+public class TestSequenceDiagram {
+	
+	@Test
+	public void isGameOverTest{
+		
+	}
+
+}
